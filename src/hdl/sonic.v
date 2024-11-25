@@ -2,11 +2,11 @@
 // clk = 100MHz
 // <Trig> and <Echo> should connect to the sensor
 // <distance> is the output distance in cm
-module sonic_top (
-    input clk,
-    input rst,
-    input Echo,
-    output Trig,
+module Sonic (
+    input         rst,
+    input         clk,
+    input         echo,
+    output        trig,
     output [19:0] distance
 );
     wire c1MHz, c8MHz;
@@ -26,20 +26,20 @@ module sonic_top (
     SonicTrigger st0 (
         .rst(rst),
         .c1MHz(c1MHz),
-        .trig(Trig)
+        .trig(trig)
     );
 
     PosCounter pc0 (
         .rst(rst),
         .c1MHz(c1MHz),
-        .echo(Echo),
+        .echo(echo),
         .distance_count(distance)
     );
 endmodule
 
 module PosCounter (
-    input c1MHz,
     input rst,
+    input c1MHz,
     input echo,
     output [19:0] distance_count
 );
