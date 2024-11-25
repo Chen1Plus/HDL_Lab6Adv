@@ -9,8 +9,6 @@ module sonic_top (
     output Trig,
     output [19:0] distance
 );
-    wire [19:0] dis;
-
     wire c1MHz, c8MHz;
 
     Clk8MHz c0 (
@@ -25,17 +23,22 @@ module sonic_top (
         .clk_div(c1MHz)
     );
 
-    wire clk_2_17;
+    SonicTrigger st0 (
+        .rst(rst),
+        .c1MHz(c1MHz),
+        .trig(Trig)
+    );
 
-    assign distance = dis;
-
-    SonicTrigger u1(.c1MHz(c1MHz), .rst(rst), .trig(Trig));
-    PosCounter u2(.clk(c1MHz), .rst(rst), .echo(Echo), .distance_count(dis));
-
+    PosCounter pc0 (
+        .rst(rst),
+        .c1MHz(c1MHz),
+        .echo(Echo),
+        .distance_count(distance)
+    );
 endmodule
 
 module PosCounter (
-    input clk,
+    input c1MHz,
     input rst,
     input echo,
     output [19:0] distance_count
@@ -45,53 +48,46 @@ module PosCounter (
     localparam S2 = 2'b10;
 
     wire start, finish;
-    reg [1:0] curr_state, next_state;
-    reg echo_reg1, echo_reg2;
+    reg [1:0] state;
+    // it seems echo is not necessary
+    reg echo_reg, echo_delay;
+    // it seems like 19-bits is enough
     reg [19:0] count, distance_register;
 
-    always @(posedge clk) begin
-        if(rst) begin
-            echo_reg1 <= 0;
-            echo_reg2 <= 0;
+    always @(posedge c1MHz, posedge rst) begin
+        if (rst) begin
+            echo_reg <= 0;
+            echo_delay <= 0;
             count <= 0;
             distance_register  <= 0;
-            curr_state <= S0;
+            state <= S0;
         end
         else begin
-            echo_reg1 <= echo;
-            echo_reg2 <= echo_reg1;
-            case(curr_state)
+            echo_reg <= echo;
+            echo_delay <= echo_reg;
+            case(state)
                 S0:begin
-                    if (start) curr_state <= next_state; //S1
+                    if (start) state <= S1; //S1
                     else count <= 0;
                 end
                 S1:begin
-                    if (finish) curr_state <= next_state; //S2
+                    if (finish) state <= S2; //S2
                     else count <= count + 1;
                 end
                 S2:begin
                     distance_register <= count;
                     count <= 0;
-                    curr_state <= next_state; //S0
+                    state <= S0; //S0
                 end
             endcase
         end
     end
 
-    always @* begin
-        case(curr_state)
-            S0:next_state = S1;
-            S1:next_state = S2;
-            S2:next_state = S0;
-            default:next_state = S0;
-        endcase
-    end
+    assign start = echo_reg & ~echo_delay;
+    assign finish = ~echo_reg & echo_delay;
 
-    assign start = echo_reg1 & ~echo_reg2;
-    assign finish = ~echo_reg1 & echo_reg2;
-
-    // TODO: trace the code and calculate the distance, output it to <distance_count>
-
+    // DONE: trace the code and calculate the distance, output it to <distance_count>
+    assign distance_count = distance_register * 17 / 1000;
 endmodule
 
 module SonicTrigger (
