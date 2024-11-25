@@ -1,1 +1,6 @@
+# vivado project
 proj
+
+# vivado IP generated files
+src/ip/*/**
+!src/ip/*/*.xci
