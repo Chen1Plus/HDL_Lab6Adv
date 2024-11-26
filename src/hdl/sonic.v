@@ -119,7 +119,7 @@ module ClkDivider #(
 
     always @(posedge clk, posedge rst)
     if (rst)
-        num <= {n{1'b0}};
+        num <= {1'b0, {(n - 1){1'b1}}};
     else
         num <= num + 1'd1;
 
