@@ -60,7 +60,7 @@ module Sonic (
         else
             distance <= distance;
     end
-endmodule
+endmodule : Sonic
 
 module ClkDivider #(
     parameter n = 1
