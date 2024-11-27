@@ -186,11 +186,11 @@ create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_
 # set_property PACKAGE_PIN A16 [get_ports {sonic_echo[0]}]
 #    set_property IOSTANDARD LVCMOS33 [get_ports {sonic_echo[0]}]
 ## Sch name = JB3
- set_property PACKAGE_PIN B15 [get_ports {trig}]
-    set_property IOSTANDARD LVCMOS33 [get_ports {trig}]
+ set_property PACKAGE_PIN B15 [get_ports {sonic_trig}]
+    set_property IOSTANDARD LVCMOS33 [get_ports {sonic_trig}]
 ## Sch name = JB4
- set_property PACKAGE_PIN B16 [get_ports {echo}]
-    set_property IOSTANDARD LVCMOS33 [get_ports {echo}]
+ set_property PACKAGE_PIN B16 [get_ports {sonic_echo}]
+    set_property IOSTANDARD LVCMOS33 [get_ports {sonic_echo}]
 ## Sch name = JB7
 # set_property PACKAGE_PIN A15 [get_ports {motor_cw[0]}]
 #    set_property IOSTANDARD LVCMOS33 [get_ports {motor_cw[0]}]

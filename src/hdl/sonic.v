@@ -1,15 +1,10 @@
 module Sonic (
     input            rst,
-    input            clk,
+    input            c1MHz,
     input            echo,
     output           trig,
     output reg [5:0] distance // unit: cm
 );
-    wire c1MHz, c8MHz;
-
-    Clk8MHz             c0 (.reset(rst), .clk(clk),   .c8MHz  (c8MHz));
-    ClkDivider #(.n(3)) c1 (.rst  (rst), .clk(c8MHz), .clk_div(c1MHz));
-
     reg [16:0] trig_cnt;
 
     always @(posedge c1MHz, posedge rst) begin
@@ -61,21 +56,3 @@ module Sonic (
             distance <= distance;
     end
 endmodule : Sonic
-
-module ClkDivider #(
-    parameter n = 1
-)(
-    input  rst,
-    input  clk,
-    output clk_div
-);
-    reg [n - 1:0] num;
-
-    always @(posedge clk, posedge rst)
-    if (rst)
-        num <= {1'b0, {(n - 1){1'b1}}};
-    else
-        num <= num + 1'd1;
-
-    assign clk_div = num[n - 1];
-endmodule : ClkDivider

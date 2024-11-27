@@ -1,11 +1,14 @@
 module lab6_advanced (
-    input clk,
     input rst,
-    input echo,
+    input clk,
+
+    input  sonic_echo,
+    output sonic_trig,
+
     input left_track,
     input right_track,
     input mid_track,
-    output trig,
+
     output IN1,
     output IN2,
     output IN3,
@@ -14,6 +17,21 @@ module lab6_advanced (
     output right_pwm
     // You may modify or add more input/ouput yourself.
 );
+    wire c1MHz, c8MHz;
+
+    Clk8MHz             c0 (.reset(rst), .clk(clk),   .c8MHz  (c8MHz));
+    ClkDivider #(.n(3)) c1 (.rst  (rst), .clk(c8MHz), .clk_div(c1MHz));
+
+    wire [5:0] distance;
+
+    Sonic s0 (
+        .rst     (rst),
+        .c1MHz   (c1MHz),
+        .echo    (sonic_echo),
+        .trig    (sonic_trig),
+        .distance(distance)
+    );
+
     // We have connected the motor and sonic_top modules in the template file for you.
     // TODO: control the motors with the information you get from ultrasonic sensor and 3-way track sensor.
     reg [1:0] mode;
@@ -48,14 +66,4 @@ module lab6_advanced (
             end
         end
     end
-    
-
-    sonic_top B(
-        .clk(clk),
-        .rst(rst),
-        .Echo(echo),
-        .Trig(trig),
-        .distance(distance)
-    );
-
 endmodule
