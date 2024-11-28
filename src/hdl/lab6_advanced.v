@@ -14,7 +14,8 @@ module lab6_advanced (
     output IN3,
     output IN4,
     output left_pwm,
-    output right_pwm
+    output right_pwm,
+    output [5:0] led
     // You may modify or add more input/ouput yourself.
 );
     wire c1MHz, c8MHz;
@@ -31,10 +32,11 @@ module lab6_advanced (
         .trig    (sonic_trig),
         .distance(distance)
     );
+    assign led = distance;
 
     // We have connected the motor and sonic_top modules in the template file for you.
     // TODO: control the motors with the information you get from ultrasonic sensor and 3-way track sensor.
-    reg [1:0] mode;
+    reg [1:0] mode, next_mode;
     reg [9:0] speed;
     motor A(
         .clk(clk),
@@ -46,25 +48,47 @@ module lab6_advanced (
         .r_IN({IN3, IN4})
     );
 
-    always @* begin
-        if (distance < 15) begin
-            mode = 2'b00;
-            speed = 10'd800;
+    reg state, next_state;
+    parameter FORWARD = 0;
+    parameter TURN = 1;
+
+    always @(posedge clk, posedge rst) begin
+        if (rst) begin
+            state <= FORWARD;
+            mode <= 2'b11;
         end else begin
-            if (!right_track) begin
-                mode = 2'b10;
-            end else if (!left_track) begin
-                mode = 2'b01;
-            end else if (!mid_track) begin
-                mode = 2'b11;
-            end else begin
-                mode = 2'b10;
-            end
-            if (!right_track + !mid_track + !left_track != 1) begin
-                speed = 10'd650;
-            end else begin
-                speed = 10'd800;
-            end
+            state <= next_state;
+            mode <= next_mode;
         end
+    end
+
+    always @* begin
+        speed = distance > 8 ? 10'd800 : 10'd0;
+        case (state)
+            FORWARD: begin
+                next_state = !left_track || !right_track ? TURN : FORWARD;
+                if (!right_track) begin
+                    next_mode = 2'b01;
+                end else if (!left_track) begin
+                    next_mode = 2'b10;
+                end else begin
+                    next_mode = 2'b11;
+                end
+            end
+            TURN: begin
+                next_state = !mid_track ? FORWARD : TURN;
+                if (!right_track) begin
+                    next_mode = 2'b10;
+                end else if (!left_track) begin
+                    next_mode = 2'b01;
+                end else begin
+                    next_mode = mode;
+                end
+            end
+            default: begin
+                next_state = FORWARD;
+                next_mode = 2'b11;
+            end
+        endcase
     end
 endmodule
