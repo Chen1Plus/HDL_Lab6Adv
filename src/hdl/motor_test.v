@@ -15,13 +15,13 @@ module motor_test (
         .clk(clk),
         .rst(rst),
         .mode(mode),
-        .speed(speed),
+        .speed(10'd700),
         .pwm({left_pwm, right_pwm}),
         .l_IN({IN1, IN2}),
         .r_IN({IN3, IN4})
     );
     always @(*) begin
         mode = sw;
-        speed = 10'd750;
+        speed = 10'd700;
     end
 endmodule

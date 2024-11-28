@@ -23,27 +23,27 @@ module motor(
     always @(*) begin
         case (mode)
             2'b00: begin
-                left_motor = 10'd0;
-                right_motor = 10'd0;
+                left_motor = speed;
+                right_motor = speed;
                 l_IN = 2'b00;
                 r_IN = 2'b00;
             end
             2'b01: begin
-                left_motor = 10'd0;
+                left_motor = speed;
+                right_motor = speed;
+                l_IN = 2'b01;
+                r_IN = 2'b00;
+            end
+            2'b10: begin
+                left_motor = speed;
                 right_motor = speed;
                 l_IN = 2'b00;
                 r_IN = 2'b10;
             end
-            2'b10: begin
-                left_motor = speed;
-                right_motor = 10'd0;
-                l_IN = 2'b10;
-                r_IN = 2'b00;
-            end
             2'b11: begin
                 left_motor = speed;
                 right_motor = speed;
-                l_IN = 2'b10;
+                l_IN = 2'b01;
                 r_IN = 2'b10;
             end
         endcase
@@ -53,7 +53,7 @@ endmodule
 module motor_pwm (
     input clk,
     input reset,
-    input [9:0]duty,
+    input [9:0] duty,
 	output pmod_1 //PWM
 );
         

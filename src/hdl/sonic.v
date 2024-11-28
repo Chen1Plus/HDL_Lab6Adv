@@ -47,7 +47,7 @@ module Sonic (
         endcase
     end
 
-    always @* begin
+    always @(posedge c1MHz, posedge rst) begin
         if (rst)
             distance <= 0;
         else if (pos_state == POS_S2)

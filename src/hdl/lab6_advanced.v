@@ -49,6 +49,7 @@ module lab6_advanced (
     always @* begin
         if (distance < 15) begin
             mode = 2'b00;
+            speed = 10'd800;
         end else begin
             if (!right_track) begin
                 mode = 2'b10;
@@ -60,9 +61,9 @@ module lab6_advanced (
                 mode = 2'b10;
             end
             if (!right_track + !mid_track + !left_track != 1) begin
-                speed = 10'd256;
+                speed = 10'd650;
             end else begin
-                speed = 10'd512;
+                speed = 10'd800;
             end
         end
     end
