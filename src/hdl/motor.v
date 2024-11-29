@@ -10,9 +10,8 @@ module Motor #(
     input [1:0] dir,
     input [9:0] speed,
 
-    output reg [1:0] r_IN,
-    output reg [1:0] l_IN,
-    output [1:0]     pwm_lr
+    output reg [3:0] in,
+    output     [1:0] pwm_lr
 );
     wire pwm;
 
@@ -25,22 +24,10 @@ module Motor #(
     assign pwm_lr = {2{pwm}};
 
     always @* case (dir)
-        BACKWORD: begin
-            l_IN = 2'b10;
-            r_IN = 2'b01;
-        end
-        LEFT: begin
-            l_IN = 2'b01;
-            r_IN = 2'b00;
-        end
-        RIGHT: begin
-            l_IN = 2'b00;
-            r_IN = 2'b10;
-        end
-        FORWARD: begin
-            l_IN = 2'b01;
-            r_IN = 2'b10;
-        end
+        BACKWORD: in <= 4'b1001;
+        LEFT:     in <= 4'b0010;
+        RIGHT:    in <= 4'b0100;
+        FORWARD:  in <= 4'b0110;
     endcase
 endmodule : Motor
 
