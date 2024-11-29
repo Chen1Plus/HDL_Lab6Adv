@@ -38,12 +38,12 @@ module lab6_advanced (
     // TODO: control the motors with the information you get from ultrasonic sensor and 3-way track sensor.
     reg [1:0] mode, next_mode;
     reg [9:0] speed;
-    motor A(
-        .clk(clk),
+    Motor A(
+        .c100MHz(clk),
         .rst(rst),
         .mode(mode),
         .speed(speed),
-        .pwm({left_pwm, right_pwm}),
+        .pwm_lr({left_pwm, right_pwm}),
         .l_IN({IN1, IN2}),
         .r_IN({IN3, IN4})
     );

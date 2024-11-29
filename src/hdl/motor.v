@@ -1,96 +1,65 @@
 // This module take "mode" input and control two motors accordingly.
 // clk should be 100MHz for PWM_gen module to work correctly.
 // You can modify / add more inputs and outputs by yourself.
-module motor(
-    input clk,
+module Motor (
     input rst,
-    input [1:0]mode,
-    input [9:0]speed,
-    output [1:0]pwm,
-    output reg [1:0]r_IN,
-    output reg [1:0]l_IN
+    input c100MHz,
+    input [1:0] mode,
+    input [9:0] speed,
+    output [1:0] pwm_lr,
+    output reg [1:0] r_IN,
+    output reg [1:0] l_IN
 );
+    wire pwm;
 
-    reg [9:0]left_motor, right_motor;
-    wire left_pwm, right_pwm;
+    MotorPWM m0 (
+        .rst    (rst),
+        .c100MHz(c100MHz),
+        .duty   (speed),
+        .out    (pwm)
+    );
+    assign pwm_lr = {2{pwm}};
 
-    motor_pwm m0(clk, rst, left_motor, left_pwm);
-    motor_pwm m1(clk, rst, right_motor, right_pwm);
-
-    assign pwm = {left_pwm,right_pwm};
-
-    // TODO: trace the rest of motor.v and control the speed and direction of the two motors
-    always @(*) begin
+    always @* begin
         case (mode)
             2'b00: begin
-                left_motor = speed;
-                right_motor = speed;
                 l_IN = 2'b00;
                 r_IN = 2'b00;
             end
             2'b01: begin
-                left_motor = speed;
-                right_motor = speed;
                 l_IN = 2'b01;
                 r_IN = 2'b00;
             end
             2'b10: begin
-                left_motor = speed;
-                right_motor = speed;
                 l_IN = 2'b00;
                 r_IN = 2'b10;
             end
             2'b11: begin
-                left_motor = speed;
-                right_motor = speed;
                 l_IN = 2'b01;
                 r_IN = 2'b10;
             end
         endcase
     end
-endmodule
+endmodule : Motor
 
-module motor_pwm (
-    input clk,
-    input reset,
+module MotorPWM (
+    input       rst,
+    input       c100MHz,
     input [9:0] duty,
-	output pmod_1 //PWM
+    output reg  out
 );
-        
-    PWM_gen pwm_0 ( 
-        .clk(clk), 
-        .reset(reset), 
-        .freq(32'd25000),
-        .duty(duty), 
-        .PWM(pmod_1)
-    );
+    localparam FREQ = 25_000;
+    localparam [$clog2(100_000_000 / FREQ) - 1:0] CNT_MAX = 100_000_000 / FREQ;
 
-endmodule
+    wire [$clog2(CNT_MAX) - 1:0] cnt_duty = {10'b0, CNT_MAX} * duty / 1024;
+    reg [31:0] cnt;
 
-//generte PWM by input frequency & duty cycle
-module PWM_gen (
-    input wire clk,
-    input wire reset,
-	input [31:0] freq,
-    input [9:0] duty,
-    output reg PWM
-);
-    wire [31:0] count_max = 100_000_000 / freq;
-    wire [31:0] count_duty = count_max * duty / 1024;
-    reg [31:0] count;
-        
-    always @(posedge clk, posedge reset) begin
-        if (reset) begin
-            count <= 0;
-            PWM <= 0;
-        end else if (count < count_max) begin
-            count <= count + 1;
-            // TODO: set <PWM> accordingly
-            PWM <= count < count_duty;
-        end else begin
-            count <= 0;
-            PWM <= 0;
-        end
+    always @(posedge c100MHz, posedge rst)
+    if (rst || cnt >= CNT_MAX) begin
+        cnt <= 0;
+        out <= 0;
+    end else begin
+        cnt <= cnt + 1;
+        out <= cnt < cnt_duty;
     end
-endmodule
-
+endmodule : MotorPWM

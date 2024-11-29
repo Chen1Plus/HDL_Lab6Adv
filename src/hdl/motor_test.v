@@ -11,12 +11,12 @@ module motor_test (
 );
     reg [1:0] mode;
     reg [9:0] speed;
-    motor A(
-        .clk(clk),
+    Motor A(
+        .c100MHz(clk),
         .rst(rst),
         .mode(mode),
         .speed(10'd700),
-        .pwm({left_pwm, right_pwm}),
+        .pwm_lr({left_pwm, right_pwm}),
         .l_IN({IN1, IN2}),
         .r_IN({IN3, IN4})
     );
