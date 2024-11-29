@@ -5,14 +5,13 @@ module lab6_advanced (
     input  sonic_echo,
     output sonic_trig,
 
-    input left_track,
-    input right_track,
-    input mid_track,
+    input track_l,
+    input track_c,
+    input track_r,
 
     output [4:1] motor_in,
     output [1:0] motor_pwm_lr,
     output [5:0] led
-    // You may modify or add more input/ouput yourself.
 );
     wire c1MHz, c8MHz;
 
@@ -48,16 +47,16 @@ module lab6_advanced (
             state <= state;
             case (state)
                 FORWARD: begin
-                    if      (!left_track)  state <= LEFT;
-                    else if (!right_track) state <= RIGHT;
+                    if      (!track_l)  state <= LEFT;
+                    else if (!track_r) state <= RIGHT;
                 end
                 LEFT: begin
-                    if      (!mid_track)   state <= FORWARD;
-                    else if (!right_track) state <= RIGHT;
+                    if      (!track_c)   state <= FORWARD;
+                    else if (!track_r) state <= RIGHT;
                 end
                 RIGHT: begin
-                    if      (!mid_track)   state <= FORWARD;
-                    else if (!left_track)  state <= LEFT;
+                    if      (!track_c)   state <= FORWARD;
+                    else if (!track_l)  state <= LEFT;
                 end
                 default: state <= FORWARD;
             endcase
