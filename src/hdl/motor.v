@@ -1,14 +1,18 @@
-// This module take "mode" input and control two motors accordingly.
-// clk should be 100MHz for PWM_gen module to work correctly.
-// You can modify / add more inputs and outputs by yourself.
-module Motor (
+module Motor #(
+    parameter BACKWORD = 2'b00,
+    parameter LEFT     = 2'b01,
+    parameter RIGHT    = 2'b10,
+    parameter FORWARD  = 2'b11
+)(
     input rst,
     input c100MHz,
-    input [1:0] mode,
+
+    input [1:0] dir,
     input [9:0] speed,
-    output [1:0] pwm_lr,
+
     output reg [1:0] r_IN,
-    output reg [1:0] l_IN
+    output reg [1:0] l_IN,
+    output [1:0]     pwm_lr
 );
     wire pwm;
 
@@ -20,26 +24,24 @@ module Motor (
     );
     assign pwm_lr = {2{pwm}};
 
-    always @* begin
-        case (mode)
-            2'b00: begin
-                l_IN = 2'b00;
-                r_IN = 2'b00;
-            end
-            2'b01: begin
-                l_IN = 2'b01;
-                r_IN = 2'b00;
-            end
-            2'b10: begin
-                l_IN = 2'b00;
-                r_IN = 2'b10;
-            end
-            2'b11: begin
-                l_IN = 2'b01;
-                r_IN = 2'b10;
-            end
-        endcase
-    end
+    always @* case (dir)
+        BACKWORD: begin
+            l_IN = 2'b10;
+            r_IN = 2'b01;
+        end
+        LEFT: begin
+            l_IN = 2'b01;
+            r_IN = 2'b00;
+        end
+        RIGHT: begin
+            l_IN = 2'b00;
+            r_IN = 2'b10;
+        end
+        FORWARD: begin
+            l_IN = 2'b01;
+            r_IN = 2'b10;
+        end
+    endcase
 endmodule : Motor
 
 module MotorPWM (

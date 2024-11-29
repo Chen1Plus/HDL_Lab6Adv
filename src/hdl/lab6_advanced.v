@@ -9,12 +9,8 @@ module lab6_advanced (
     input right_track,
     input mid_track,
 
-    output IN1,
-    output IN2,
-    output IN3,
-    output IN4,
-    output left_pwm,
-    output right_pwm,
+    output [4:1] motor_in,
+    output [1:0] motor_pwm_lr,
     output [5:0] led
     // You may modify or add more input/ouput yourself.
 );
@@ -36,59 +32,45 @@ module lab6_advanced (
 
     // We have connected the motor and sonic_top modules in the template file for you.
     // TODO: control the motors with the information you get from ultrasonic sensor and 3-way track sensor.
-    reg [1:0] mode, next_mode;
-    reg [9:0] speed;
-    Motor A(
-        .c100MHz(clk),
-        .rst(rst),
-        .mode(mode),
-        .speed(speed),
-        .pwm_lr({left_pwm, right_pwm}),
-        .l_IN({IN1, IN2}),
-        .r_IN({IN3, IN4})
-    );
+    // reg [1:0] mode;
 
-    reg state, next_state;
-    parameter FORWARD = 0;
-    parameter TURN = 1;
+
+    reg [1:0] state;
+
+    localparam FORWARD = 2'b11;
+    localparam LEFT    = 2'd01;
+    localparam RIGHT   = 2'd10;
 
     always @(posedge clk, posedge rst) begin
         if (rst) begin
             state <= FORWARD;
-            mode <= 2'b11;
         end else begin
-            state <= next_state;
-            mode <= next_mode;
+            state <= state;
+            case (state)
+                FORWARD: begin
+                    if      (!left_track)  state <= LEFT;
+                    else if (!right_track) state <= RIGHT;
+                end
+                LEFT: begin
+                    if      (!mid_track)   state <= FORWARD;
+                    else if (!right_track) state <= RIGHT;
+                end
+                RIGHT: begin
+                    if      (!mid_track)   state <= FORWARD;
+                    else if (!left_track)  state <= LEFT;
+                end
+                default: state <= FORWARD;
+            endcase
         end
     end
 
-    always @* begin
-        speed = distance > 8 ? 10'd800 : 10'd0;
-        case (state)
-            FORWARD: begin
-                next_state = !left_track || !right_track ? TURN : FORWARD;
-                if (!right_track) begin
-                    next_mode = 2'b01;
-                end else if (!left_track) begin
-                    next_mode = 2'b10;
-                end else begin
-                    next_mode = 2'b11;
-                end
-            end
-            TURN: begin
-                next_state = !mid_track ? FORWARD : TURN;
-                if (!right_track) begin
-                    next_mode = 2'b10;
-                end else if (!left_track) begin
-                    next_mode = 2'b01;
-                end else begin
-                    next_mode = mode;
-                end
-            end
-            default: begin
-                next_state = FORWARD;
-                next_mode = 2'b11;
-            end
-        endcase
-    end
+    Motor m0 (
+        .rst(rst),
+        .c100MHz(clk),
+        .dir(state),
+        .speed(distance > 8 || distance < 4 ? 10'd840 : 10'd0),
+        .pwm_lr(motor_pwm_lr),
+        .l_IN({motor_in[1], motor_in[2]}),
+        .r_IN({motor_in[3], motor_in[4]})
+    );
 endmodule

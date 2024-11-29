@@ -14,7 +14,7 @@ module motor_test (
     Motor A(
         .c100MHz(clk),
         .rst(rst),
-        .mode(mode),
+        .dir(mode),
         .speed(10'd700),
         .pwm_lr({left_pwm, right_pwm}),
         .l_IN({IN1, IN2}),
