@@ -50,7 +50,7 @@ module Sonic (
     always @(posedge c1MHz, posedge rst) begin
         if (rst)
             distance <= 0;
-        else if (pos_state == POS_S2)
+        else if (trig_cnt >= 17'd100000)
             distance <= pos_cnt * 16'd17 / 1000;
         else
             distance <= distance;
