@@ -165,11 +165,11 @@ set_property PACKAGE_PIN J2 [get_ports {motor_in[3]}]
 set_property PACKAGE_PIN G2 [get_ports {motor_in[4]}]
     set_property IOSTANDARD LVCMOS33 [get_ports {motor_in[4]}]
 # Sch name = JA7
-set_property PACKAGE_PIN H1 [get_ports {motor_pwm_lr[1]}]
-    set_property IOSTANDARD LVCMOS33 [get_ports {motor_pwm_lr[1]}]
+set_property PACKAGE_PIN H1 [get_ports {motor_pwm_ab[1]}]
+    set_property IOSTANDARD LVCMOS33 [get_ports {motor_pwm_ab[1]}]
 # Sch name = JA8
-set_property PACKAGE_PIN K2 [get_ports {motor_pwm_lr[0]}]
-    set_property IOSTANDARD LVCMOS33 [get_ports {motor_pwm_lr[0]}]
+set_property PACKAGE_PIN K2 [get_ports {motor_pwm_ab[0]}]
+    set_property IOSTANDARD LVCMOS33 [get_ports {motor_pwm_ab[0]}]
 ## Sch name = JA9
 # set_property PACKAGE_PIN H2 [get_ports {PWM_1}]
 #    set_property IOSTANDARD LVCMOS33 [get_ports {PWM_1}]

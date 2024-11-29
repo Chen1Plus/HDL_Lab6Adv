@@ -11,7 +11,7 @@ module Motor #(
     input [9:0] speed,
 
     output reg [3:0] in,
-    output     [1:0] pwm_lr
+    output     [1:0] pwm_ab
 );
     wire pwm;
 
@@ -21,7 +21,7 @@ module Motor #(
         .duty   (speed),
         .out    (pwm)
     );
-    assign pwm_lr = {2{pwm}};
+    assign pwm_ab = {2{pwm}};
 
     always @* case (dir)
         BACKWORD: in <= 4'b1001;

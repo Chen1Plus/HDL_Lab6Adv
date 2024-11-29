@@ -10,7 +10,7 @@ module lab6_advanced (
     input track_r,
 
     output [4:1] motor_in,
-    output [1:0] motor_pwm_lr,
+    output [1:0] motor_pwm_ab,
     output [5:0] led
 );
     wire c1MHz, c8MHz;
@@ -69,6 +69,6 @@ module lab6_advanced (
         .dir    (state),
         .speed  (distance > 10 ? 10'd840 : 10'd0),
         .in     (motor_in),
-        .pwm_lr (motor_pwm_lr)
+        .pwm_ab (motor_pwm_ab)
     );
 endmodule
