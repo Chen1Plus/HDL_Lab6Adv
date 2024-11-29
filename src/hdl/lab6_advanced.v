@@ -18,7 +18,7 @@ module lab6_advanced (
     Clk8MHz             c0 (.reset(rst), .clk(clk),   .c8MHz  (c8MHz));
     ClkDivider #(.n(3)) c1 (.rst  (rst), .clk(c8MHz), .clk_div(c1MHz));
 
-    wire [5:0] distance;
+    wire [7:0] distance;
 
     Sonic s0 (
         .rst     (rst),
@@ -67,7 +67,7 @@ module lab6_advanced (
         .rst    (rst),
         .c100MHz(clk),
         .dir    (state),
-        .speed  (distance > 8 || distance < 2 ? 10'd820 : 10'd0),
+        .speed  (distance > 24 ? 10'd820 : 10'd0),
         .in     (motor_in),
         .pwm_ab (motor_pwm_ab)
     );
