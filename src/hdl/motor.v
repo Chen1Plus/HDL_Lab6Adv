@@ -7,7 +7,6 @@ module Motor #(
     input rst,
     input c100MHz,
 
-    input       rotate_turn,
     input [1:0] dir,
     input [9:0] speed,
 
@@ -26,8 +25,8 @@ module Motor #(
 
     always @* case (dir)
         BACKWORD: in <= 4'b1001;
-        LEFT:     in <= rotate_turn ? 4'b1010 : 4'b0010;
-        RIGHT:    in <= rotate_turn ? 4'b0101 : 4'b0100;
+        LEFT:     in <= 4'b0010;
+        RIGHT:    in <= 4'b0100;
         FORWARD:  in <= 4'b0110;
     endcase
 endmodule : Motor

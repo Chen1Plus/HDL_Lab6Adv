@@ -2,7 +2,7 @@ module lab6_advanced (
     input rst,
     input clk,
 
-    input       sw_turn,
+    input       sw_stop,
     input [1:0] sw_speed,
 
     input  sonic_echo,
@@ -82,9 +82,8 @@ module lab6_advanced (
     ) m0 (
         .rst        (rst),
         .c100MHz    (clk),
-        .rotate_turn(sw_turn),
         .dir        (state),
-        .speed      (distance > 8'd24 ? speed : 10'd0),
+        .speed      (!sw_stop && distance > 8'd24 ? speed : 10'd0),
         .in         (motor_in),
         .pwm_ab     (motor_pwm_ab)
     );

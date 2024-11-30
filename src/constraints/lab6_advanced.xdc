@@ -40,8 +40,8 @@ set_property PACKAGE_PIN V16 [get_ports {sw_speed[1]}]
 #    set_property IOSTANDARD LVCMOS33 [get_ports {sw[13]}]
 # set_property PACKAGE_PIN T1 [get_ports {sw[14]}]
 #    set_property IOSTANDARD LVCMOS33 [get_ports {sw[14]}]
-set_property PACKAGE_PIN R2 [get_ports {sw_turn}]
-    set_property IOSTANDARD LVCMOS33 [get_ports {sw_turn}]
+set_property PACKAGE_PIN R2 [get_ports {sw_stop}]
+    set_property IOSTANDARD LVCMOS33 [get_ports {sw_stop}]
 
 
 # # LEDs
