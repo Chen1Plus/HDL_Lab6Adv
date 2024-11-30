@@ -32,6 +32,12 @@ module lab6_advanced (
     );
     assign led = distance;
 
+    wire track_l_db, track_c_db, track_r_db;
+
+    Debounce d0 (.clk(clk), .in(track_l), .out(track_l_db));
+    Debounce d1 (.clk(clk), .in(track_c), .out(track_c_db));
+    Debounce d2 (.clk(clk), .in(track_r), .out(track_r_db));
+
     reg [1:0] state;
 
     localparam BACKWARD = 2'd00;
@@ -46,16 +52,16 @@ module lab6_advanced (
         state <= state;
         case (state)
             FORWARD: begin
-                if      (!track_l) state <= LEFT;
-                else if (!track_r) state <= RIGHT;
+                if      (!track_l_db) state <= LEFT;
+                else if (!track_r_db) state <= RIGHT;
             end
             LEFT: begin
-                if      (!track_c) state <= FORWARD;
-                else if (!track_r) state <= RIGHT;
+                if      (!track_c_db) state <= FORWARD;
+                else if (!track_r_db) state <= RIGHT;
             end
             RIGHT: begin
-                if      (!track_c) state <= FORWARD;
-                else if (!track_l) state <= LEFT;
+                if      (!track_c_db) state <= FORWARD;
+                else if (!track_l_db) state <= LEFT;
             end
             default: state <= FORWARD;
         endcase
