@@ -4,10 +4,13 @@ module Motor #(
     parameter [1:0] RIGHT    = 2'b10,
     parameter [1:0] FORWARD  = 2'b11
 )(
-    input            rst,
-    input            c100MHz,
-    input      [1:0] dir,
-    input      [9:0] speed,
+    input rst,
+    input c100MHz,
+
+    input       rotate_turn,
+    input [1:0] dir,
+    input [9:0] speed,
+
     output reg [3:0] in,
     output     [1:0] pwm_ab
 );
@@ -23,8 +26,8 @@ module Motor #(
 
     always @* case (dir)
         BACKWORD: in <= 4'b1001;
-        LEFT:     in <= 4'b0010;
-        RIGHT:    in <= 4'b0100;
+        LEFT:     in <= rotate_turn ? 4'b1010 : 4'b0010;
+        RIGHT:    in <= rotate_turn ? 4'b0101 : 4'b0100;
         FORWARD:  in <= 4'b0110;
     endcase
 endmodule : Motor

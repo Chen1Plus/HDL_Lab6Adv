@@ -7,11 +7,11 @@ module ClkDivider #(
 );
     reg [n - 1:0] num;
 
-    always @(posedge clk, posedge rst)
-    if (rst)
-        num <= {1'b0, {(n - 1){1'b1}}};
-    else
-        num <= num + 1'd1;
-
+    always @(posedge clk, posedge rst) begin
+        if (rst)
+            num <= {1'b0, {(n - 1){1'b1}}};
+        else
+            num <= num + 1'd1;
+    end
     assign clk_div = num[n - 1];
 endmodule : ClkDivider

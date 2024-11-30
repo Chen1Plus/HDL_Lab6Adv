@@ -2,6 +2,9 @@ module lab6_advanced (
     input rst,
     input clk,
 
+    input       sw_turn,
+    input [1:0] sw_speed,
+
     input  sonic_echo,
     output sonic_trig,
 
@@ -11,7 +14,7 @@ module lab6_advanced (
 
     output [4:1] motor_in,
     output [1:0] motor_pwm_ab,
-    output [5:0] led
+    output [7:0] led
 );
     wire c1MHz, c8MHz;
 
@@ -58,17 +61,25 @@ module lab6_advanced (
         endcase
     end
 
+    reg [9:0] speed;
+
+    always @*
+    if      (sw_speed[1]) speed <= 10'd870;
+    else if (sw_speed[0]) speed <= 10'd840;
+    else                  speed <= 10'd780;
+
     Motor #(
         .BACKWORD(BACKWARD),
         .LEFT    (LEFT),
         .RIGHT   (RIGHT),
         .FORWARD (FORWARD)
     ) m0 (
-        .rst    (rst),
-        .c100MHz(clk),
-        .dir    (state),
-        .speed  (distance > 24 ? 10'd820 : 10'd0),
-        .in     (motor_in),
-        .pwm_ab (motor_pwm_ab)
+        .rst        (rst),
+        .c100MHz    (clk),
+        .rotate_turn(sw_turn),
+        .dir        (state),
+        .speed      (distance > 8'd24 ? speed : 10'd0),
+        .in         (motor_in),
+        .pwm_ab     (motor_pwm_ab)
     );
 endmodule : lab6_advanced
