@@ -2,28 +2,26 @@ module lab6_advanced (
     input rst,
     input clk,
 
+    input       sw_stop,
+    input [1:0] sw_speed,
+
     input  sonic_echo,
     output sonic_trig,
 
-    input left_track,
-    input right_track,
-    input mid_track,
+    input track_l,
+    input track_c,
+    input track_r,
 
-    output IN1,
-    output IN2,
-    output IN3,
-    output IN4,
-    output left_pwm,
-    output right_pwm,
-    output [5:0] led
-    // You may modify or add more input/ouput yourself.
+    output [4:1] motor_in,
+    output [1:0] motor_pwm_ab,
+    output [7:0] led
 );
     wire c1MHz, c8MHz;
 
     Clk8MHz             c0 (.reset(rst), .clk(clk),   .c8MHz  (c8MHz));
     ClkDivider #(.n(3)) c1 (.rst  (rst), .clk(c8MHz), .clk_div(c1MHz));
 
-    wire [5:0] distance;
+    wire [7:0] distance;
 
     Sonic s0 (
         .rst     (rst),
@@ -34,61 +32,59 @@ module lab6_advanced (
     );
     assign led = distance;
 
-    // We have connected the motor and sonic_top modules in the template file for you.
-    // TODO: control the motors with the information you get from ultrasonic sensor and 3-way track sensor.
-    reg [1:0] mode, next_mode;
-    reg [9:0] speed;
-    Motor A(
-        .c100MHz(clk),
-        .rst(rst),
-        .mode(mode),
-        .speed(speed),
-        .pwm_lr({left_pwm, right_pwm}),
-        .l_IN({IN1, IN2}),
-        .r_IN({IN3, IN4})
-    );
+    wire track_l_db, track_c_db, track_r_db;
 
-    reg state, next_state;
-    parameter FORWARD = 0;
-    parameter TURN = 1;
+    Debounce d0 (.clk(clk), .in(track_l), .out(track_l_db));
+    Debounce d1 (.clk(clk), .in(track_c), .out(track_c_db));
+    Debounce d2 (.clk(clk), .in(track_r), .out(track_r_db));
 
-    always @(posedge clk, posedge rst) begin
-        if (rst) begin
-            state <= FORWARD;
-            mode <= 2'b11;
-        end else begin
-            state <= next_state;
-            mode <= next_mode;
-        end
-    end
+    reg [1:0] state;
 
-    always @* begin
-        speed = distance > 8 ? 10'd800 : 10'd0;
+    localparam BACKWARD = 2'd00;
+    localparam LEFT     = 2'd01;
+    localparam RIGHT    = 2'd10;
+    localparam FORWARD  = 2'b11;
+
+    always @(posedge clk, posedge rst)
+    if (rst)
+        state <= FORWARD;
+    else begin
+        state <= state;
         case (state)
             FORWARD: begin
-                next_state = !left_track || !right_track ? TURN : FORWARD;
-                if (!right_track) begin
-                    next_mode = 2'b01;
-                end else if (!left_track) begin
-                    next_mode = 2'b10;
-                end else begin
-                    next_mode = 2'b11;
-                end
+                if      (!track_l_db) state <= LEFT;
+                else if (!track_r_db) state <= RIGHT;
             end
-            TURN: begin
-                next_state = !mid_track ? FORWARD : TURN;
-                if (!right_track) begin
-                    next_mode = 2'b10;
-                end else if (!left_track) begin
-                    next_mode = 2'b01;
-                end else begin
-                    next_mode = mode;
-                end
+            LEFT: begin
+                if      (!track_c_db) state <= FORWARD;
+                else if (!track_r_db) state <= RIGHT;
             end
-            default: begin
-                next_state = FORWARD;
-                next_mode = 2'b11;
+            RIGHT: begin
+                if      (!track_c_db) state <= FORWARD;
+                else if (!track_l_db) state <= LEFT;
             end
+            default: state <= FORWARD;
         endcase
     end
-endmodule
+
+    reg [9:0] speed;
+
+    always @*
+    if      (sw_speed[1]) speed <= 10'd870;
+    else if (sw_speed[0]) speed <= 10'd840;
+    else                  speed <= 10'd780;
+
+    Motor #(
+        .BACKWORD(BACKWARD),
+        .LEFT    (LEFT),
+        .RIGHT   (RIGHT),
+        .FORWARD (FORWARD)
+    ) m0 (
+        .rst        (rst),
+        .c100MHz    (clk),
+        .dir        (state),
+        .speed      (!sw_stop && distance > 8'd24 ? speed : 10'd0),
+        .in         (motor_in),
+        .pwm_ab     (motor_pwm_ab)
+    );
+endmodule : lab6_advanced
