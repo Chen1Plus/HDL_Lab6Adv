@@ -1,0 +1,28 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "https://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="800" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="280.5" cy="383.5" rx="30" ry="30"/>
+	<text x="274.5" y="389.5" font-family="Times New Roman" font-size="20">L</text>
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="394.5" cy="188.5" rx="30" ry="30"/>
+	<text x="388.5" y="194.5" font-family="Times New Roman" font-size="20">F</text>
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="507.5" cy="383.5" rx="30" ry="30"/>
+	<text x="500.5" y="389.5" font-family="Times New Roman" font-size="20">R</text>
+	<path stroke="black" stroke-width="1" fill="none" d="M 271.633,354.9 A 140.195,140.195 0 0 1 365.228,194.803"/>
+	<polygon fill="black" stroke-width="1" points="271.633,354.9 275,346.088 265.187,348.012"/>
+	<text x="189.5" y="250.5" font-family="Times New Roman" font-size="20">tracker_left</text>
+	<path stroke="black" stroke-width="1" fill="none" d="M 424.059,193.245 A 134.063,134.063 0 0 1 518.08,355.495"/>
+	<polygon fill="black" stroke-width="1" points="518.08,355.495 524.9,348.976 515.209,346.508"/>
+	<text x="510.5" y="248.5" font-family="Times New Roman" font-size="20">tracker_right</text>
+	<polygon stroke="black" stroke-width="1" points="295.641,357.601 379.359,214.399"/>
+	<polygon fill="black" stroke-width="1" points="379.359,214.399 371.005,218.782 379.638,223.829"/>
+	<text x="344.5" y="304.5" font-family="Times New Roman" font-size="20">track_center</text>
+	<polygon stroke="black" stroke-width="1" points="492.458,357.543 409.542,214.457"/>
+	<polygon fill="black" stroke-width="1" points="409.542,214.457 409.227,223.885 417.879,218.872"/>
+	<path stroke="black" stroke-width="1" fill="none" d="M 478.889,392.487 A 331.346,331.346 0 0 1 309.111,392.487"/>
+	<polygon fill="black" stroke-width="1" points="478.889,392.487 469.875,389.704 472.436,399.37"/>
+	<text x="342.5" y="424.5" font-family="Times New Roman" font-size="20">tracker_right</text>
+	<polygon stroke="black" stroke-width="1" points="477.5,383.5 310.5,383.5"/>
+	<polygon fill="black" stroke-width="1" points="310.5,383.5 318.5,388.5 318.5,378.5"/>
+	<text x="347.5" y="374.5" font-family="Times New Roman" font-size="20">tracker_left</text>
+</svg>
