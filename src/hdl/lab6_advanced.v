@@ -3,7 +3,9 @@ module lab6_advanced (
     input clk,
 
     input       sw_stop,
-    input [1:0] sw_speed,
+    input       enable_distance,
+    input       sw_speed_max,
+    input [7:0] sw_speed,
 
     input  sonic_echo,
     output sonic_trig,
@@ -40,9 +42,9 @@ module lab6_advanced (
 
     reg [1:0] state;
 
-    localparam BACKWARD = 2'd00;
-    localparam LEFT     = 2'd01;
-    localparam RIGHT    = 2'd10;
+    localparam BACKWARD = 2'b00;
+    localparam LEFT     = 2'b01;
+    localparam RIGHT    = 2'b10;
     localparam FORWARD  = 2'b11;
 
     always @(posedge clk, posedge rst)
@@ -69,10 +71,20 @@ module lab6_advanced (
 
     reg [9:0] speed;
 
-    always @*
-    if      (sw_speed[1]) speed <= 10'd870;
-    else if (sw_speed[0]) speed <= 10'd840;
-    else                  speed <= 10'd780;
+    always @* begin
+        if      (sw_speed_max) speed = 10'd1023;
+        else if (sw_speed[7]) speed = 10'd950;
+        else if (sw_speed[6]) speed = 10'd940;
+        else if (sw_speed[5]) speed = 10'd930;
+        else if (sw_speed[4]) speed = 10'd920;
+        else if (sw_speed[3]) speed = 10'd910;
+        else if (sw_speed[2]) speed = 10'd900;
+        else if (sw_speed[1]) speed = 10'd870;
+        else if (sw_speed[0]) speed = 10'd840;
+        else                  speed = 10'd780;
+
+        if (state == LEFT || state == RIGHT) speed = 10'd1023;
+    end
 
     Motor #(
         .BACKWORD(BACKWARD),
@@ -83,7 +95,7 @@ module lab6_advanced (
         .rst        (rst),
         .c100MHz    (clk),
         .dir        (state),
-        .speed      (!sw_stop && distance > 8'd24 ? speed : 10'd0),
+        .speed      (!sw_stop && (!enable_distance || distance > 8'd6) ? speed : 10'd0),
         .in         (motor_in),
         .pwm_ab     (motor_pwm_ab)
     );
