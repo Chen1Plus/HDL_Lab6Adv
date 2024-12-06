@@ -1,0 +1,19 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "https://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="800" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="381.5" cy="185.5" rx="30" ry="30"/>
+	<text x="370.5" y="191.5" font-family="Times New Roman" font-size="20">S0</text>
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="248.5" cy="305.5" rx="30" ry="30"/>
+	<text x="237.5" y="311.5" font-family="Times New Roman" font-size="20">S1</text>
+	<ellipse stroke="black" stroke-width="1" fill="none" cx="535.5" cy="305.5" rx="30" ry="30"/>
+	<text x="524.5" y="311.5" font-family="Times New Roman" font-size="20">S2</text>
+	<polygon stroke="black" stroke-width="1" points="359.226,205.597 270.774,285.403"/>
+	<polygon fill="black" stroke-width="1" points="270.774,285.403 280.063,283.757 273.364,276.332"/>
+	<text x="144.5" y="236.5" font-family="Times New Roman" font-size="20">echo &amp; ~echo_delay</text>
+	<polygon stroke="black" stroke-width="1" points="278.5,305.5 505.5,305.5"/>
+	<polygon fill="black" stroke-width="1" points="505.5,305.5 497.5,300.5 497.5,310.5"/>
+	<text x="309.5" y="326.5" font-family="Times New Roman" font-size="20">~echo &amp; echo_delay</text>
+	<polygon stroke="black" stroke-width="1" points="511.836,287.061 405.164,203.939"/>
+	<polygon fill="black" stroke-width="1" points="405.164,203.939 408.401,212.801 414.548,204.913"/>
+</svg>
